@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Admin extends Authenticatable
+class Student extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -17,17 +17,17 @@ class Admin extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $guard='admin';
+    protected $guard='students';
     protected $fillable = [
         'name',
         'email',
         'password',
         'mobile',
         'image',
-        'role',
         'status',
-        'subject_id',
+        'year_admission',
         'class_id',
+        'grade_id'
     ];
 
     /**
@@ -45,7 +45,5 @@ class Admin extends Authenticatable
      *
      * @var array<string, string>
      */
-    public function subject(){
-        return $this->belongsTo('App\Models\Subject', 'subject_id', 'id');
-    }
+
 }

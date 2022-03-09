@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AdminLTE 3 | Log in </title>
+    <title>AdminLTM 3 | Log in </title>
     <base href="{{asset('')}}" />
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -22,7 +22,7 @@
         <!-- /.login-logo -->
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <a class="h1"><b>Admin</b>LTE</a>
+                <a class="h1"><b>Admin</b>LTM</a>
             </div>
             <div class="card-body">
                 <p class="login-box-msg">Sign in to start your session</p>

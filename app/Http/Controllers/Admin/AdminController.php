@@ -15,6 +15,7 @@ class AdminController extends Controller
         if($request->isMethod('post')){
             $data=$request->all();
             if(Auth::guard('admin')->attempt(['email'=>$data['email'], 'password'=>$data['password']])){
+                // Admin::where('id', Auth::guard('admin')->user()->id)->update(['status'=>1]);
                 return redirect('/admin/dashboard')->with('message', 'Welcome back admin');
 
             }else{
@@ -31,7 +32,9 @@ class AdminController extends Controller
         return View('admin.index');
     }
     public function Logout(){
+        // Admin::where('id', Auth::guard('admin')->user()->id)->update(['status'=>0]);
         Auth::guard('admin')->logout();
+
         return redirect('/admin');
     }
     public function changeDetail(Request $request){
