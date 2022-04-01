@@ -8,21 +8,6 @@
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <h1>Catalogues</h1>
-                        @if (Session::has('success_message'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <strong>{{ Session::get('success_message') }}</strong>
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @elseif (Session::has('error_message'))
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>{{ Session::get('error_message') }}</strong>
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -42,7 +27,7 @@
         @endif
 
         <!-- Main content -->
-        <form action="{{ route('admin.edit-question.grade', ['id' => $id, 'grade_id' => $grade_id]) }}" method="POST"
+        <form action="{{ route('admin.edit-question.exam', ['question_id' => $question_id, 'id' => $id]) }}" method="POST"
             enctype="multipart/form-data" novalidate>
             @csrf
             <section class="content">

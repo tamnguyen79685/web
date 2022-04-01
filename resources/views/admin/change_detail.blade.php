@@ -89,6 +89,7 @@
                                         {{-- <a href="{{url('/admin/view-image')}}">View Image</a> --}}
 
                                     </div>
+
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Status</label>
                                         @if($admindetails->status==1)

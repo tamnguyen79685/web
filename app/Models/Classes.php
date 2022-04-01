@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Teacher_Class;
+
 class Classes extends Model
 {
     use HasFactory;
@@ -17,5 +17,8 @@ class Classes extends Model
     ];
     public function teacher(){
         return $this->hasMany('App\Models\Admin', 'class_id', 'id');
+    }
+    public function exam(){
+        return $this->hasMany('App\Models\Exam', 'class_id', 'id');
     }
 }

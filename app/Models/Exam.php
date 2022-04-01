@@ -10,10 +10,16 @@ class Exam extends Model
     use HasFactory;
     protected $table='exams';
     protected $fillable=[
+        'name',
         'subject_id',
         'teacher_id',
-        'grade',
+        'class_id',
         'start_time',
-        'end_time'
+        'end_time',
+        'status'
     ];
+    // public function question(){
+    //     return $this->hasMany('App\Models\Question', 'exam_id', 'id');
+    // }
+
 }

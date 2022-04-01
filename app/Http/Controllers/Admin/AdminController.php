@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 class AdminController extends Controller
 {
     public function Login(Request $request){
@@ -80,5 +82,38 @@ class AdminController extends Controller
                 return response()->json(['status'=>true]);
             }else return response()->json(['status'=>false]);
         }
+    }
+    public function sendEmail($user, $code){
+        Mail::send(
+            'admin.confirm-code',
+            ['user'=>$user, 'code'=>$code],
+            function($message) use ($user){
+                $message->to($user->email);
+                $message->subject("$user->name, reset your password");
+            }
+        );
+    }
+    public function forgotPassword(Request $request){
+        if($request->isMethod('post')){
+            $data=$request->all();
+            $user=Admin::where('role', 0)->where('email', $data['email'])->first();
+            if(empty($user)){
+                return redirect()->back()->with('error_message', 'Email not exists');
+            }else{
+                $this->sendEmail($user, Str::random(64));
+                return redirect()->back()->with('success_message', 'Send code successfully');
+            }
+        }
+        return View('admin.forgot-password');
+    }
+    public function resetPassword(Request $request, $email, $code){
+        if($request->isMethod('post')){
+            $data=$request->all();
+            if($data['email']==$email&&$data['password']==$data['confirm_password']){
+                Admin::where('role', 0)->where('email', $email)->first()->update(['password'=>Hash::make($data['password'])]);
+                return redirect('/admin')->with('success_message', 'Change password successfully');
+            }
+        }
+        return View('admin.reset-password', compact('code', 'email'));
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+use Illuminate\Support\Facades\Auth;
 class Admin extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -28,6 +28,7 @@ class Admin extends Authenticatable
         'status',
         'subject_id',
         'class_id',
+        // 'grade_id',
     ];
 
     /**
@@ -47,5 +48,8 @@ class Admin extends Authenticatable
      */
     public function subject(){
         return $this->belongsTo('App\Models\Subject', 'subject_id', 'id');
+    }
+    public function exam(){
+        return $this->hasMany('App\Models\Exam', 'teacher_id', 'id');
     }
 }

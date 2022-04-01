@@ -34,30 +34,71 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Question Exam</h3>
-                                <a role="button" href="" style="max-width: 180px;float:right"
-                                    class="btn btn-block btn-success">Add
-                                    Question Exam</a>
+                                <h3 class="card-title">Questions</h3>
+                                <div style="float:right">
+                                    <a role="button" class="btn btn-success delete-all"
+                                        href="{{ url('admin/delete-all/questions-exam') }}" record="questions-exam">Delete
+                                        All</a>
+                                    <a role="button" href="{{ url('admin/add-question/exam', $id) }}"
+                                        class="btn btn-success">Add
+                                        Question</a>
+
+                                </div>
                             </div>
 
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="exams" class="table table-bordered table-striped">
+                                <table id="questions-exam" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
+                                            <th style="width:50px"><input type="checkbox" class="select-all"></th>
                                             <th>ID</th>
-                                            <th>Subject Name</th>
-                                            <th>Grade</th>
-                                            <th>Teacher</th>
-                                            <th>Start time</th>
-                                            <th>End time</th>
+                                            <th>Question</th>
+                                            <th>Created At</th>
+                                            <th>Status</th>
 
-                                            <th style="width: 120px">Action</th>
+                                            <th style="width:100px">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {{-- <input type="hidden" value="{{ $i = 1 }}"> --}}
+                                        @foreach ($questions as $key => $question)
+                                            @if ($question['exam_id'] == $id||in_array($id, explode(",",$question['select_id'])))
+                                                <tr>
+                                                    <th><input type="checkbox" class="sub_ck"
+                                                            data-id={{ $question['id'] }}></th>
+                                                    <td>{{ ++$key }}</td>
 
+                                                    <td>{!! $question['question'] !!}</td>
+                                                    <td>
+                                                        {{ date('Y-m-d', strtotime($question['created_at'])) }}
+                                                    </td>
+
+                                                    <td>
+                                                        @if ($question['status'] == 1)
+                                                            <a class="status-question-exam" href="javascript:void(0)"
+                                                                style="color:green" data-id="{{ $question['id'] }}"
+                                                                id="question-{{ $question['id'] }}">Active</a>
+                                                        @else
+                                                            <a class="status-question-exam" href="javascript:void(0)"
+                                                                style="color:red" data-id="{{ $question['id'] }}"
+                                                                id="question-{{ $question['id'] }}">Inactive</a>
+                                                        @endif
+                                                    </td>
+                                                    <td style="font-size: 20px">
+                                                        <a title="Edit Question" role="button"
+                                                            href="{{ route('admin.edit-question.exam', ['question_id' => $question['id'], 'id' => $question['exam_id']]) }}"><i
+                                                                class="fas fa-edit" style="color: green"></i></a>
+                                                        &nbsp;
+                                                        &nbsp;
+                                                        <a title="Delete Question" href="javascript:void(0)"
+                                                            record='question' recordid={{ $question['id'] }}
+                                                            class="confirmdelete"><i class="fa fa-trash-alt"
+                                                                style="color: red"></i></a>
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endforeach
                                     </tbody>
 
                                 </table>

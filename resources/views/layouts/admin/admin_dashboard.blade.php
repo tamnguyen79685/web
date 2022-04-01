@@ -55,11 +55,13 @@
     <link rel="stylesheet" href="backend/plugins/dropzone/min/dropzone.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="backend/dist/css/adminlte.min.css">
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.2/css/jquery.dataTables.min.css"> --}}
 
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.2/css/jquery.dataTables.min.css"> --}}
+    {{-- <link rel="stylesheet" href="imgckeditor/ckeditor.css"> --}}
     <!-- Theme style -->
     {{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
     <!-- Theme style -->
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -151,6 +153,7 @@
             $('#students').DataTable();
             $('#classes').DataTable();
             $('#grades').DataTable();
+            $('#questions-exam').DataTable();
         });
 
     </script>
@@ -186,9 +189,8 @@
 
             $('.select2').select2()
             $('.teacher').select2()
-            $('.classes').select2({
-                tags:true
-            })
+            // $('.gradess').select2()
+            $('.classes').select2()
 
             //Initialize Select2 Elements
             $('.select2bs4').select2({
@@ -276,7 +278,11 @@
 
     </script>
     <!-- Page specific script -->
-    {{-- <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @stack('script')
+
+
 </body>
 
 </html>

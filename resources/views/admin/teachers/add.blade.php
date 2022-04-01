@@ -121,7 +121,7 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Subject Name</label>
-                                            <select class="form-control" id="exampleInputEmail1" name="subject_id">
+                                            <select class="form-control" id="exampleInputEmail1" name="subject_id" required>
                                                 @foreach ($subjects as $subject)
                                                     <option value="{{$subject['id']}}">{{$subject['name']}}</option>
                                                 @endforeach
@@ -129,6 +129,17 @@
 
                                         </div>
                                     </div>
+                                    {{-- <div class="form-group">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Grade</label>
+                                            <select class="form-control select2" id="exampleInputEmail1" name="grade_id[]" multiple>
+                                                @foreach ($grades as $grade)
+                                                    <option value="{{$grade['id']}}">{{$grade['grade']}}</option>
+                                                @endforeach
+                                            </select>
+
+                                        </div>
+                                    </div> --}}
                                     <div class="form-group">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Classes Name</label>

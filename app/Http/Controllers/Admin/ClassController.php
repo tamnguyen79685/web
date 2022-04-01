@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Classes;
 use App\Models\Grade;
+use Illuminate\Support\Facades\Session;
 
 class ClassController extends Controller
 {
     public function Index()
     {
+        Session::put('page', 'class');
         $grades = Grade::get()->toArray();
         $teachers = Admin::where('role', 0)->get()->toArray();
         $classes = Classes::get()->toArray();

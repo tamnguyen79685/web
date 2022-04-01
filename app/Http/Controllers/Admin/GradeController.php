@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Grade;
+use Illuminate\Support\Facades\Session;
 
 class GradeController extends Controller
 {
     public function Index()
     {
+        Session::put('page', 'grade');
         $grades = Grade::get()->toArray();
         return View('admin.grades.index', compact('grades'));
     }

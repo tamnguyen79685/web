@@ -6,14 +6,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Classes;
+use App\Models\Grade;
 use App\Models\Subject;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class TeacherController extends Controller
 {
     public function Index()
     {
+        Session::put('page', 'teacher');
         $teachers = Admin::where('role', 0)->get()->toArray();
         $classes = Classes::get()->toArray();
         $subjects = Subject::get()->toArray();
@@ -28,10 +31,13 @@ class TeacherController extends Controller
     {
         $subjects = Subject::get()->toArray();
         $classes = Classes::get()->toArray();
+        // $grades=Grade::get()->toArray();
+        // dd($grades);
         if ($request->isMethod('post')) {
             $data = $request->all();
             $data['password'] = Hash::make($data['password']);
             $data['class_id'] = implode(',', $data['class_id']);
+            // $data['grade_id']=implode(',', $data['grade_id']);
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $reimage = 'imgs/' . time() . '.' . $image->getClientOriginalExtension();
@@ -50,13 +56,14 @@ class TeacherController extends Controller
         // dd($teacher);
         $subjects = Subject::get()->toArray();
         $classes = Classes::get()->toArray();
+        // $grades=Grade::get()->toArray();
         $class_id = explode(",", $teacher['class_id']);
         // dd($class_id);
         if ($request->isMethod('post')) {
             $data = $request->all();
             $data['password'] = $teacher['password'];
             $data['class_id'] = implode(',', $data['class_id']);
-
+            // $data['grade_id']=implode(',', $data['grade_id']);
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $reimage = 'imgs/' . time() . '.' . $image->getClientOriginalExtension();
@@ -75,14 +82,14 @@ class TeacherController extends Controller
     public function DeleteAll(Request $request)
     {
         $data = $request->all();
-        
+
         if ($request->ajax()) {
-                
+
             Admin::whereIn('id', explode(",", $data['ids']))->delete();
             return response()->json(['status' => true]);
         }
         return redirect()->back()->with('success_message', 'Deleted Teachers Successfully');
-        
+
     }
     public function deleteTeacher(Request $request, $id)
     {

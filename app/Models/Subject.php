@@ -12,9 +12,10 @@ class Subject extends Model
     protected $fillable=[
         'name',
         'grade_id',
-        'status'
+        'status',
+        // 'teacher_id'
     ];
-    public function teacher(){
-        return $this->hasMany('App\Models\Admin', 'subject_id', 'id')->where('subject_id', Auth::guard('admin')->user()->subject_id);
+    public function exam(){
+        return $this->hasMany('App\Models\Exam', 'subject_id', 'id');
     }
 }

@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 //backend
 Route::prefix('admin')->namespace('Admin')->group(function(){
     Route::match(['get', 'post'], '/', 'AdminController@Login');
+    Route::match(['get', 'post'], '/forgot-password', 'AdminController@forgotPassword');
+    Route::match(['get', 'post'], '/reset-password/{email}/{code}', 'AdminController@resetPassword');
     Route::group(['middleware'=>'admin'], function(){
         Route::get('/dashboard', 'AdminController@Index');
         Route::get('/logout', 'AdminController@Logout');
@@ -28,7 +30,16 @@ Route::prefix('admin')->namespace('Admin')->group(function(){
         Route::match(['get', 'post'], '/add-exam', 'ExamController@addExam');
         Route::post('/edit-exam/{id}', 'ExamController@editExam');
         Route::get('/delete-exam/{id}', 'ExamController@deleteExam');
-        Route::match(['get', 'post'], 'index-question/exam/{id}', 'ExamController@indexQuestionExam');
+        Route::post('/status/exam', 'ExamController@StatusExam');
+        Route::get('/delete-all/exams', 'ExamController@DeleteAll');
+        //Questions Exam
+        Route::match(['get', 'post'], 'questions/exam/{id}', 'QuestionExamController@Index');
+        Route::get('/delete-all/questions-exam', 'QuestionExamController@DeleteAll');
+        Route::post('/status/questions-exam', 'QuestionExamController@StatusQuestion');
+        Route::get('/delete-question/{id}', 'QuestionExamController@DeleteQuestion');
+        Route::match(['get', 'post'], 'add-question/exam/{id}', 'QuestionExamController@addQuestion');
+        Route::match(['get', 'post'], 'edit-question/{question_id}/exam/{id}',['as'=>'admin.edit-question.exam', 'uses'=>'QuestionExamController@editQuestion']);
+
         //Teachers
         Route::get('/teachers', 'TeacherController@index');
         Route::match(['get', 'post'], '/add-teacher', 'TeacherController@addTeacher');
@@ -66,6 +77,12 @@ Route::prefix('admin')->namespace('Admin')->group(function(){
         Route::get('/delete-grade/{id}', 'GradeController@DeleteGrade');
         Route::get('/delete-all/grades', 'GradeController@DeleteAll');
         Route::post('/status/grade', 'GradeController@StatusGrade');
+        //Questions
+        Route::get('/questions/grade/{grade_id}', 'QuestionController@Index');
+        Route::match(['get', 'post'], '/add-question/grade/{grade_id}', 'QuestionController@addQuestion');
+        Route::match(['get', 'post'], '/edit-question/{id}/grade/{grade_id}',['as'=>'admin.edit-question.grade', 'uses'=>'QuestionController@editQuestion']);
+        Route::post('/chose-question', 'QuestionController@choseQuestion');
 
+        Route::post('/upload-image-ckeditor', 'CkeditorController@uploadImage');
     });
 });

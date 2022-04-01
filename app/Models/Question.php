@@ -10,10 +10,19 @@ class Question extends Model
     use HasFactory;
     protected $table='questions';
     protected $fillable=[
-        'title',
+        'exam_id',
+        'select_id',
+        'teacher_id',
+        'subject_id',
+        'question',
         'answer',
-        'selections',
-        'grade_id',
-        'exam_id'
+        'status',
+        'correct_answer'
     ];
+    public function subject(){
+        return $this->belongsTo('App\Models\Subject', 'subject_id', 'id');
+    }
+    // public function teacher(){
+    //     return $this->belongsTo('App\Models\Admin', 'teacher_id', 'id');
+    // }
 }

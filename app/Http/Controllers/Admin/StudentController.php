@@ -9,11 +9,13 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Student;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Grade;
+use Illuminate\Support\Facades\Session;
 
 class StudentController extends Controller
 {
     public function Index()
     {
+        Session::put('page', 'student');
         $students = Student::get()->toArray();
         $classes = Classes::get()->toArray();
         $grades = Grade::get()->toArray();

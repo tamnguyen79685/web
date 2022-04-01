@@ -16,6 +16,13 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
+                        @elseif (Session::has('error_message'))
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong>{{ Session::get('error_message') }}</strong>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                         @endif
                     </div>
                     <div class="col-sm-6">
@@ -35,78 +42,141 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">Questions</h3>
-                                <a href="{{ url('/admin/add-question') }}" role="button"
-                                    style="max-width: 150px;float:right" class="btn btn-block btn-success">Add
-                                    Question</a>
+                                <div style="float:right">
+                                    {{-- <a role="button" class="btn btn-success delete-all"
+                                        href="{{ url('admin/delete-all/questions-exam') }}" record="questions-exam">Delete All</a> --}}
+                                    <a role="button" href="javascript:void(0)" data-toggle="modal"
+                                        data-target="#exampleModal" class="btn btn-success chose-question">Add Chose
+                                        Questions</a>
+                                    <a role="button" href="{{ url('admin/add-question/grade', $grade_id) }}"
+                                        class="btn btn-success">Add
+                                        Question</a>
+
+                                </div>
                             </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <table id="questions" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Title</th>
-                                            <th>Answer</th>
-                                            <th>Teacher</th>
-                                            <th>Grade</th>
 
-                                            <th style="width: 120px">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {{-- <input type="hidden" value="{{ $i = 1 }}"> --}}
-                                        @foreach ($products as $i=>$product)
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Add Question Exam</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post" action="{{ url('/admin/chose-question') }}">
+                                                    @csrf
 
-                                                <tr>
-                                                    <td>{{ ++$i }}</td>
-                                                    <td>{{ $product->product_name }}</td>
-                                                    @if(isset($product->main_image))
-                                                    <td>
-                                                        <img src="imgs/{{$product->main_image}}" width="80px" height="80px">
-                                                    </td>
-                                                    @else
-                                                    <td>
-                                                        <img src="imgs/noimage.png" width="80px" height="80px">
-                                                        {{-- <img src="imgs/{{$product->main_image}}" width="80px" height="80px"> --}}
-                                                    </td>
-                                                    @endif
-                                                    <td>{{ $product->product_code }}</td>
-                                                    <td>{{$product->product_price}}</td>
-                                                    <td>{{ $product->product_color }}</td>
-                                                    <td>{{$product->category->category_name}}</td>
-                                                    <td>{{$product->section->name}}</td>
-                                                    <td>
-                                                        @if ($product->status == 1)
-                                                            <a class="updateproductstatus text text-success"
-                                                                product_id="{{ $product->id }}"
-                                                                id="product-{{ $product->id }}"
-                                                                href="javascript:void(0)">Active</a>
-                                                        @else
-                                                            <a class="updateproductstatus text text-danger"
-                                                                product_id="{{ $product->id }}"
-                                                                id="product-{{ $product->id }}"
-                                                                href="javascript:void(0)">Inactive</a>
-                                                        @endif
-                                                    </td>
-                                                    <td style="font-size: 20px">
-                                                        <a title="Add Attribute Product" href="{{ url('/admin/attr-product', $product->id) }}"><i class="fa fa-plus"></i></a>
+                                                <div class="form-group">
+                                                    <label for="message-text" class="col-form-label">Exam:</label>
+                                                    <select class="form-control trythis" name="select_id" required>
+                                                        <option value=0>Select</option>
+                                                        @foreach ($teacher_exam['exam'] as $exam)
+                                                            <option value="{{ $exam['id'] }}"
+                                                                data-examid="{{ $exam['id'] }}">{{ $exam['name'] }}-
+                                                                @foreach ($classes as $class)
+                                                                    @if (in_array($class['id'], explode(',', $exam['class_id'])))
+                                                                        {{ $class['name'] }}
+                                                                    @endif
+                                                                @endforeach-
+                                                                @foreach ($subjects as $subject)
+                                                                    @if ($subject['id'] == $exam['subject_id'])
+                                                                        {{ $subject['name'] }}
+                                                                    @endif
+                                                                @endforeach
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                </form>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary submit-question">Submit</button>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <table id="questions" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:50px"><input type="checkbox" class="select-all"></th>
+                                                <th>ID</th>
+                                                <th>Teacher</th>
+                                                <th>Subject</th>
+                                                <th>Question</th>
+                                                <th>Created At</th>
+                                                <th>Status</th>
+                                                <th style="width:100px">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{-- <input type="hidden" value="{{ $i = 1 }}"> --}}
+                                            @foreach ($questions as $key => $question)
+                                                @if ($grade_id == $question['subject']['grade_id'])
+                                                    <tr>
+                                                        <th><input type="checkbox" class="sub_ck"
+                                                                data-id={{ $question['id'] }}
+                                                                data-subject={{ $question['subject_id'] }}>
+                                                        </th>
+                                                        <td>{{ ++$key }}</td>
+                                                        <td>
+                                                            @foreach ($teachers as $teacher)
+                                                                @if ($teacher['id'] == $question['teacher_id'])
+                                                                    {{ $teacher['name'] }}
+                                                                @endif
+                                                            @endforeach
+                                                        </td>
+                                                        <td>
+                                                            @foreach ($subjects as $subject)
+                                                                @if ($subject['id'] == $question['subject_id'])
+                                                                    {{ $subject['name'] }}
+                                                                @endif
+                                                            @endforeach
+                                                        </td>
+                                                        <td>{!! $question['question'] !!}</td>
+                                                        <td>
+                                                            {{ date('Y-m-d', strtotime($question['created_at'])) }}
+                                                        </td>
+
+                                                        <td>
+                                                            @if ($question['status'] == 1)
+                                                                <a @if(Auth::guard('admin')->user()->id==$question['teacher_id']) class="status-question-exam" @endif href="javascript:void(0)"
+                                                                    style="color:green" data-id="{{ $question['id'] }}"
+                                                                    id="question-{{ $question['id'] }}">Active</a>
+                                                            @else
+                                                                <a @if(Auth::guard('admin')->user()->id==$question['teacher_id']) class="status-question-exam" @endif href="javascript:void(0)"
+                                                                    style="color:red" data-id="{{ $question['id'] }}"
+                                                                    id="question-{{ $question['id'] }}">Inactive</a>
+                                                            @endif
+                                                        </td>
+                                                        <td style="font-size: 20px">
+                                                            <a title="Edit Question" role="button"
+                                                                href=" {{ route('admin.edit-question.grade', ['id' => $question['id'], 'grade_id' => $grade_id]) }}"><i
+                                                                    class="fas fa-edit" style="color: green"></i></a>
                                                             &nbsp;
-                                                        <a title="Add Image Product" href="{{ url('/admin/add-images', $product->id) }}"><i class="fa fa-plus-circle"></i></a>
                                                             &nbsp;
-                                                        <a title="Edit Product" href="{{ url('/admin/edit-product', $product->id) }}"><i class="fas fa-edit" style="color: green"></i></a>
-                                                            &nbsp;
-                                                        <a title="Delete Product" href="javascript:void(0)" record='product' recordid={{$product->id}}
-                                                            class="confirmdelete"><i
-                                                                class="fa fa-trash-alt" style="color: red"></i></a>
-                                                    </td>
-                                                </tr>
+                                                            <a title="Delete Question" href="javascript:void(0)"
+                                                                record='question' recordid={{ $question['id'] }}
+                                                                class="confirmdelete"><i class="fa fa-trash-alt"
+                                                                    style="color: red"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
+                                        </tbody>
 
-                                        @endforeach
-                                    </tbody>
-
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
                         </div>
                         <!-- /.card -->
 

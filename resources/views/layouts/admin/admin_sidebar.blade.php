@@ -1,3 +1,7 @@
+<?php
+use App\Models\Grade;
+$grades=Grade::grade();
+?>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
@@ -29,7 +33,7 @@
                 <li class="nav-item menu-open">
                     <a
                         class="nav-link {{ ((Session::get('page') == 'admin_setting' ? 'active' : '' || Session::get('page') == 'admin_detail') ? 'active' : '' || Session::get('page') == 'admin_password') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <i class="fas fa-user-circle fa"></i>
                         <p>
                             Admin Setting
                             <i class="right fas fa-angle-left"></i>
@@ -57,7 +61,7 @@
                 <li class="nav-header">BASIC</li>
                 @if (Auth::guard('admin')->user()->role == 0)
                     <li class="nav-item">
-                        <a href="pages/calendar.html" class="nav-link">
+                        <a href="pages/calendar.html" class="nav-link ">
                             <i class="nav-icon fa fa-clipboard-check"></i>
                             <p>
                                 Results
@@ -66,7 +70,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('/admin/exams') }}" class="nav-link">
+                        <a href="{{ url('/admin/exams') }}" class="nav-link {{ Session::get('page') == 'exam' ? 'active' : '' }}">
                             <i class="nav-icon fa fa-clipboard-list"></i>
                             <p>
                                 Exams
@@ -79,7 +83,7 @@
                 @endif
                 @if (Auth::guard('admin')->user()->role == 1)
                     <li class="nav-item">
-                        <a href="{{ url('admin/teachers') }}" class="nav-link">
+                        <a href="{{ url('admin/teachers') }}" class="nav-link {{ Session::get('page') == 'teacher' ? 'active' : '' }}">
                             <i class="nav-icon fa fa-user"></i>
                             <p>
                                 Teachers
@@ -87,8 +91,9 @@
                         </a>
                     </li>
                 @endif
+                @if(Auth::guard('admin')->user()->role==1)
                 <li class="nav-item">
-                    <a href="{{ url('/admin/students') }}" class="nav-link">
+                    <a href="{{ url('/admin/students') }}" class="nav-link {{ Session::get('page') == 'student' ? 'active' : '' }}">
                         <i class="nav-icon fa fa-user-graduate"></i>
                         <p>
                             Students
@@ -96,8 +101,9 @@
                     </a>
 
                 </li>
+
                 <li class="nav-item">
-                    <a href="{{ url('admin/grades') }}" class="nav-link">
+                    <a href="{{ url('admin/grades') }}" class="nav-link {{ Session::get('page') == 'grade' ? 'active' : '' }}">
                         <i class="nav-icon fa fa-graduation-cap"></i>
                         <p>
                             Grades
@@ -105,7 +111,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url('/admin/subjects') }}" class="nav-link">
+                    <a href="{{ url('/admin/subjects') }}" class="nav-link {{ Session::get('page') == 'subject' ? 'active' : '' }}">
                         <i class="nav-icon fa fa-clipboard-list"></i>
                         <p>
                             Subjects
@@ -116,14 +122,14 @@
 
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url('admin/classes') }}" class="nav-link">
+                    <a href="{{ url('admin/classes') }}" class="nav-link {{ Session::get('page') == 'class' ? 'active' : '' }}">
                         <i class="nav-icon 	fas fa-school"></i>
                         <p>
                             Classes
                         </p>
                     </a>
                 </li>
-
+                @endif
                 @if (Auth::guard('admin')->user()->role == 0)
                     <li class="nav-item">
                         <a class="nav-link">
@@ -134,13 +140,17 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ url('/admin/question-10') }}" class="nav-link">
-                                    &nbsp;&nbsp;<i class="far fa-circle nav-icon"></i>
-                                    <p>Grade 10</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
+                            @foreach ($grades as $grade)
+                                {{Session::put('grade_id', $grade['id'])}}
+                                <li class="nav-item">
+                                    <a href="{{ url('/admin/questions/grade', $grade['id']) }}" class="nav-link {{ Session::get('page') == $grade['id'] ? 'active' : '' }}">
+                                        &nbsp;&nbsp;<i class="far fa-circle nav-icon"></i>
+                                        <p>Grade {{$grade['grade']}}</p>
+                                    </a>
+                                </li>
+                            @endforeach
+
+                            {{-- <li class="nav-item">
                                 <a href="{{ url('/admin/question-11') }}" class="nav-link">
                                     &nbsp;&nbsp;<i class="far fa-circle nav-icon"></i>
                                     <p>Grade 11</p>
@@ -151,11 +161,11 @@
                                     &nbsp;&nbsp;<i class="far fa-circle nav-icon"></i>
                                     <p>Grade 12</p>
                                 </a>
-                            </li>
+                            </li> --}}
                         </ul>
                     </li>
                 @endif
-                <li class="nav-header">MISCELLANEOUS</li>
+                {{-- <li class="nav-header">MISCELLANEOUS</li>
                 <li class="nav-item">
                     <a href="iframe.html" class="nav-link">
                         <i class="nav-icon fas fa-ellipsis-h"></i>
@@ -167,7 +177,7 @@
                         <i class="nav-icon fas fa-file"></i>
                         <p>Documentation</p>
                     </a>
-                </li>
+                </li> --}}
 
                 <!-- /.sidebar-menu -->
     </div>

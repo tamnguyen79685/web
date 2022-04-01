@@ -8,24 +8,33 @@ use App\Models\Subject;
 use Illuminate\Http\Request;
 use App\Models\Classes;
 use App\Models\Admin;
+use App\Models\Question;
+use Carbon\Carbon as CarbonCarbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+// use Illuminate\Support\Carbon;
 class ExamController extends Controller
 {
     public function Index()
     {
         // $teacher=Admin::find(Auth::guard('admin')->user()->id)->with('subject');
         // dd($teacher);
+        Session::put('page', 'exam');
         $exams = Exam::get()->toArray();
-        $subjects = Subject::with('teacher')->first()->toArray();
-        $classes= Classes::get()->toArray();
-        // dd(explode(",",$subjects['teacher'][0]['class_id']));
-
-        return View('admin.exams.index', compact('exams', 'subjects', 'classes'));
+        $subjects = Subject::get()->toArray();
+        $classes = Classes::get()->toArray();
+        $teacher=Admin::find(Auth::guard('admin')->user()->id);
+        $teacher_classes=explode(",", $teacher['class_id']);
+        // dd($subjects);
+        // $exam_classes=explode(",", $['class_id']);
+        return View('admin.exams.index', compact('exams', 'teacher', 'classes', 'subjects', 'teacher_classes'));
     }
     public function addExam(Request $request)
     {
         if ($request->isMethod('post')) {
             $data = $request->all();
+            $data['subject_id']=Auth::guard('admin')->user()->subject_id;
+            $data['class_id']=implode(",",$data['class_id']);
             Exam::create($data);
             return redirect()->back()->with('success_message', 'Created exam successfully');
         }
@@ -33,21 +42,44 @@ class ExamController extends Controller
     public function editExam(Request $request, $id)
     {
         $exam = Exam::find($id);
+        if ($request->isMethod('post')) {
+            $data = $request->all();
+            $data['subject_id']=Auth::guard('admin')->user()->subject_id;
+            $data['class_id']=implode(",",$data['class_id']);
 
-        $data = $request->all();
-        $exam->update($data);
+            $exam->update($data);
+
+        }
         return redirect()->back()->with('success_message', 'Updated exam successfully');
-
         // return View('admin.exams.index', compact('examedit'));
     }
     public function deleteExam($id) {
         Exam::find($id)->delete();
         return redirect()->back()->with('success_message', 'Deleted exam successfully');
     }
-    public function indexQuestionExam(Request $request){
-        if($request->isMethod('post')){
 
+    public function StatusExam(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $request->all();
+            if ($data['status'] == "Active") {
+                Exam::find($data['id'])->update(['status' => 0]);
+                return response()->json(['status' => "Active"]);
+            } else {
+                Exam::find($data['id'])->update(['status' => 1]);
+                return response()->json(['status' => "Inactive"]);
+            }
+            // return response()->json(['status'=>true]);
         }
-        return View('admin.questionexam.index');
     }
+    public function DeleteAll(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $request->all();
+            Exam::whereIn('id', explode(",", $data['ids']))->delete();
+            return response()->json(['status' => true]);
+        }
+        return redirect()->back()->with('success_message', 'Deleted Exams Successfully');
+    }
+
 }

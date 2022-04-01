@@ -105,7 +105,7 @@
                                         <div class="input-group">
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input" name="image"
-                                                    id="exampleInputFile" onchange="loadfile1(event)">
+                                                    id="exampleInputFile" onchange="loadfile(event)">
                                                 <label class="custom-file-label" for="exampleInputFile">{{$teacher['image']}}</label>
                                             </div>
                                             <div class="input-group-append">
@@ -169,7 +169,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
 
-                                        <img id="output1" width="300" height="300" src="{{ $teacher['image'] }}">
+                                        <img id="output" width="300" height="300" src="{{ $teacher['image'] }}">
 
                                     </div>
                                 </div>

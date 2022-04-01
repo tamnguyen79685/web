@@ -16,4 +16,8 @@ class Grade extends Model
     public function class(){
         return $this->hasMany('App\Models\Classes', 'grade_id', 'id');
     }
+    public static function grade(){
+        $grades=Grade::get()->toArray();
+        return $grades;
+    }
 }

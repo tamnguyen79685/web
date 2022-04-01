@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Subject;
 use App\Models\Grade;
+use Illuminate\Support\Facades\Session;
+
 class SubjectController extends Controller
 {
     public function Index(){
+        Session::put('page', 'subject');
         $subjects=Subject::get()->toArray();
         $grades = Grade::get()->toArray();
         return View('admin.subjects.index', compact('subjects', 'grades'));
