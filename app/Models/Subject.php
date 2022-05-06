@@ -18,4 +18,9 @@ class Subject extends Model
     public function exam(){
         return $this->hasMany('App\Models\Exam', 'subject_id', 'id');
     }
+
+    public static function subject(){
+        $subjects=Subject::get()->toArray();
+        return $subjects;
+    }
 }

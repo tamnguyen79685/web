@@ -15,14 +15,15 @@ class Question extends Model
         'teacher_id',
         'subject_id',
         'question',
-        'answer',
         'status',
-        'correct_answer'
+        'image',
+        'score',
+        'grade_id'
     ];
     public function subject(){
         return $this->belongsTo('App\Models\Subject', 'subject_id', 'id');
     }
-    // public function teacher(){
-    //     return $this->belongsTo('App\Models\Admin', 'teacher_id', 'id');
-    // }
+    public function answer(){
+        return $this->hasMany('App\Models\Answer', 'question_id', 'id');
+    }
 }

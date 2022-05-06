@@ -52,4 +52,8 @@ class Admin extends Authenticatable
     public function exam(){
         return $this->hasMany('App\Models\Exam', 'teacher_id', 'id');
     }
+    public function teacher(){
+        $teachers=Admin::where('role', 0)->get()->toArray();
+        return $teachers;
+    }
 }

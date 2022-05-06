@@ -9,18 +9,11 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-        <!-- Navbar Search -->
-
-
-        <!-- Messages Dropdown Menu -->
-
-        <!-- Notifications Dropdown Menu -->
-
-
         <li class="nav-item">
-            <a class="nav-link"  href="{{url('/admin/logout')}}" role="button">
+            <a class="nav-link" href="{{ url('/admin/logout') }}" role="button">
                 <i class="fas fa-sign-out-alt"></i>Logout
             </a>
         </li>
     </ul>
+
 </nav>

@@ -107,7 +107,7 @@
                                 <table id="classes" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th style="width:50px"><input type="checkbox" class="select-all"></th>
+                                            <th style="width:20px"><input type="checkbox" class="select-all"></th>
                                             <th>ID</th>
                                             <th>Class Name</th>
                                             <th>Grade</th>

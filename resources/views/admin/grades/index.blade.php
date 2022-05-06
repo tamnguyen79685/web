@@ -83,7 +83,7 @@
                                 <table id="grades" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th style="width:50px"><input type="checkbox" class="select-all"></th>
+                                            <th style="width:20px"><input type="checkbox" class="select-all"></th>
                                             <th>ID</th>
                                             <th>Grade</th>
                                             <th>Status</th>

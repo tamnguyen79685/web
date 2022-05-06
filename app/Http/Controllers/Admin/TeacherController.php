@@ -16,6 +16,8 @@ class TeacherController extends Controller
 {
     public function Index()
     {
+        // Session::put('subject_id', Auth::guard('admin')->user()->id);
+        // dd(Auth::guard('admin')->user()->subject_id);
         Session::put('page', 'teacher');
         $teachers = Admin::where('role', 0)->get()->toArray();
         $classes = Classes::get()->toArray();
@@ -44,6 +46,9 @@ class TeacherController extends Controller
                 $dest = public_path('/imgs');
                 $image->move($dest, $reimage);
                 $data['image'] = $reimage;
+                Admin::create($data);
+                return redirect('/admin/teachers')->with('success_message', 'Created Teacher Successfully');
+            }else{
                 Admin::create($data);
                 return redirect('/admin/teachers')->with('success_message', 'Created Teacher Successfully');
             }

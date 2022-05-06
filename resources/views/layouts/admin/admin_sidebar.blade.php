@@ -1,6 +1,10 @@
 <?php
 use App\Models\Grade;
+use App\Models\Subject;
+
 $grades=Grade::grade();
+
+$subjects=Subject::subject();
 ?>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
@@ -18,7 +22,16 @@ $grades=Grade::grade();
                 <img src="backend/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">{{ Session::get('name') }}</a>
+                <a class="d-block">{{ Session::get('name') }}
+                @if(Auth::guard('admin')->user()->role==0)-
+                    @foreach ($subjects as $subject)
+                        @if (Session::get('subject')==$subject['id'])
+                            {{$subject['name']}}
+                        @endif
+                    @endforeach
+                @endif
+                {{-- {{var_dump(Auth::guard('admin')->user()->subject_id)}} --}}
+            </a>
             </div>
         </div>
 
@@ -28,8 +41,7 @@ $grades=Grade::grade();
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <!-- Add icons to the links using the .nav-icon class
-       with font-awesome or any other icon font library -->
+
                 <li class="nav-item menu-open">
                     <a
                         class="nav-link {{ ((Session::get('page') == 'admin_setting' ? 'active' : '' || Session::get('page') == 'admin_detail') ? 'active' : '' || Session::get('page') == 'admin_password') ? 'active' : '' }}">
@@ -74,7 +86,6 @@ $grades=Grade::grade();
                             <i class="nav-icon fa fa-clipboard-list"></i>
                             <p>
                                 Exams
-                                {{-- <i class="fas fa-angle-left right"></i> --}}
                             </p>
 
                         </a>
@@ -84,7 +95,7 @@ $grades=Grade::grade();
                 @if (Auth::guard('admin')->user()->role == 1)
                     <li class="nav-item">
                         <a href="{{ url('admin/teachers') }}" class="nav-link {{ Session::get('page') == 'teacher' ? 'active' : '' }}">
-                            <i class="nav-icon fa fa-user"></i>
+                            <i class="nav-icon fas fa-chalkboard-teacher"></i>
                             <p>
                                 Teachers
                             </p>
@@ -112,10 +123,9 @@ $grades=Grade::grade();
                 </li>
                 <li class="nav-item">
                     <a href="{{ url('/admin/subjects') }}" class="nav-link {{ Session::get('page') == 'subject' ? 'active' : '' }}">
-                        <i class="nav-icon fa fa-clipboard-list"></i>
+                        <i class="nav-icon fas fa-book-reader"></i>
                         <p>
                             Subjects
-                            {{-- <i class="fas fa-angle-left right"></i> --}}
                         </p>
 
                     </a>
@@ -132,7 +142,10 @@ $grades=Grade::grade();
                 @endif
                 @if (Auth::guard('admin')->user()->role == 0)
                     <li class="nav-item">
-                        <a class="nav-link">
+                        <a class="nav-link
+                        @foreach ($grades as $grade)
+                        {{ Session::get('page') == $grade['id'] ? 'active' : '' }}
+                        @endforeach">
                             <i class="nav-icon fas fa-question"></i>
                             <p>
                                 Questions
@@ -141,45 +154,21 @@ $grades=Grade::grade();
                         </a>
                         <ul class="nav nav-treeview">
                             @foreach ($grades as $grade)
-                                {{Session::put('grade_id', $grade['id'])}}
                                 <li class="nav-item">
-                                    <a href="{{ url('/admin/questions/grade', $grade['id']) }}" class="nav-link {{ Session::get('page') == $grade['id'] ? 'active' : '' }}">
+                                    <a href="{{ url('/admin/subjects/grade', $grade['id']) }}" class="nav-link {{ Session::get('page') == $grade['id'] ? 'active' : '' }}">
                                         &nbsp;&nbsp;<i class="far fa-circle nav-icon"></i>
                                         <p>Grade {{$grade['grade']}}</p>
                                     </a>
                                 </li>
                             @endforeach
 
-                            {{-- <li class="nav-item">
-                                <a href="{{ url('/admin/question-11') }}" class="nav-link">
-                                    &nbsp;&nbsp;<i class="far fa-circle nav-icon"></i>
-                                    <p>Grade 11</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ url('/admin/question-12') }}" class="nav-link">
-                                    &nbsp;&nbsp;<i class="far fa-circle nav-icon"></i>
-                                    <p>Grade 12</p>
-                                </a>
-                            </li> --}}
+
                         </ul>
                     </li>
                 @endif
-                {{-- <li class="nav-header">MISCELLANEOUS</li>
-                <li class="nav-item">
-                    <a href="iframe.html" class="nav-link">
-                        <i class="nav-icon fas fa-ellipsis-h"></i>
-                        <p>Tabbed IFrame Plugin</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://adminlte.io/docs/3.1/" class="nav-link">
-                        <i class="nav-icon fas fa-file"></i>
-                        <p>Documentation</p>
-                    </a>
-                </li> --}}
+            </ul>
 
-                <!-- /.sidebar-menu -->
+        </nav>
     </div>
     <!-- /.sidebar -->
 </aside>

@@ -28,9 +28,10 @@ class AdminController extends Controller
     }
     public function Index(){
         $admin=Admin::where('id', Auth::guard('admin')->user()->id)->first()->toArray();
-        // dd($name);
+        // dd($admin['name']);
         Session::put('page', 'admin_setting');
         Session::put('name', $admin['name']);
+        Session::put('subject', $admin['subject_id']);
         return View('admin.index');
     }
     public function Logout(){

@@ -12,14 +12,16 @@ class Exam extends Model
     protected $fillable=[
         'name',
         'subject_id',
+        'grade_id',
         'teacher_id',
         'class_id',
         'start_time',
         'end_time',
-        'status'
+        'status',
+        'password'
     ];
-    // public function question(){
-    //     return $this->hasMany('App\Models\Question', 'exam_id', 'id');
-    // }
+    public function question(){
+        return $this->hasMany('App\Models\Question', 'exam_id', 'id');
+    }
 
 }

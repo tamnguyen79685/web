@@ -22,6 +22,41 @@ $(document).ready(function () {
             }
         });
     });
+    $('.updatequestion').click(function(){
+        // alert(1);
+        var recordid=$(this).attr('recordid');
+        var grade_id=$(this).attr('gradeid');
+        var exam_id=$(this).attr('examid');
+        $.ajax({
+            url:'admin/update-question',
+            type:'post',
+            data:{
+                recordid:recordid,
+                examid:exam_id
+            },
+            success:function(resp){
+                if(resp['status']==true){
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, delete it!",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href =
+                                "/admin/questions/grade/" + grade_id + "/exam/" + exam_id;
+                        }
+                    });
+                }
+            },
+            error:function(){
+                alert('ERROR');
+            }
+        })
+    })
     $(".select-all").click(function () {
         if (this.checked) {
             $(".sub_ck").each(function () {
@@ -67,45 +102,44 @@ $(document).ready(function () {
             }
         }
     });
-    $(".chose-question").click(function () {
-        var allVals = [];
-        var allSubs = [];
-        $(".sub_ck:checked").each(function () {
-            allVals.push($(this).attr("data-id"));
-            allSubs.push($(this).attr("data-subject"));
-        });
-        if (allVals.length <= 0) {
-            alert("Please select row.");
-        } else {
-            // var record = $(this).attr("record");
 
+    $(".sub_ck").click(function () {
+        var allquestion_ids = [];
+        // var allsubject_ids = [];
+        $(".sub_ck:checked").each(function () {
+            allquestion_ids.push($(this).attr("data-id"));
+            // allsubject_ids.push($(this).attr('data-subject'));
+        });
+        if (allquestion_ids.length == 0) {
+            alert("You must select at least 1 question");
+        } else {
             $(".trythis").change(function () {
-                var examid = $(this).children(":selected").attr("data-examid");
-                // alert(examid);
-                var join_selected_values = allVals.join(",");
-                var subs = allSubs.join(",");
-                $(".submit-question").click(function () {
+                var alls=allquestion_ids.join(",");
+                var grade_id = $(this).children(':selected').attr("data-grade");
+                var subject_id=$(this).children(':selected').attr('data-subject');
+                var exam_id = $(this).children(':selected').attr("data-examid");
+                $('.submit-question').click(function(){
                     $.ajax({
-                        url: "/admin/chose-question/",
-                        type: "POST",
+                        url: "admin/choose-question",
+                        type: "post",
                         data: {
-                            ids: join_selected_values,
-                            subs: subs,
-                            examid: examid,
-                            // check:check
+                            allquestion_ids: alls,
+                            exam_id: exam_id,
+                            // grade_id:grade_id
                         },
                         success: function (resp) {
-                            if (resp["status"] == true) {
-                                alert('Add Question For Exam Successfully');
+                            if(resp['status']==true){
+                                alert('Insert Successfully Questions in the Exam');
                                 window.location.href =
-                                    "/admin/questions/exam" +"/" + examid;
+                                    "/admin/questions/subject/" + subject_id+"/grade/"+grade_id;
                             }
                         },
                         error: function () {
                             alert("ERROR");
                         },
                     });
-                });
+                })
+
             });
         }
     });
@@ -147,6 +181,7 @@ $(document).ready(function () {
             },
         });
     });
+
     $("#current_password").keyup(function () {
         var current_password = $(this).val();
         // alert(current_password);
@@ -218,6 +253,32 @@ $(document).ready(function () {
                 } else {
                     $("#teacher-" + id).html(
                         '<a  href="javascript:void(0)" style="color:red">Inactive</a>'
+                    );
+                }
+            },
+            error: function () {
+                alert("ERROR");
+            },
+        });
+    });
+    $(".status-answer").click(function () {
+        var status = $(this).text();
+        var id = $(this).attr("data-id");
+        $.ajax({
+            url: "/admin/status/answer",
+            type: "POST",
+            data: {
+                id: id,
+                status: status,
+            },
+            success: function (resp) {
+                if (resp["status"] == "False") {
+                    $("#answer-" + id).html(
+                        '<a  href="javascript:void(0)" style="color:green">True</a>'
+                    );
+                } else {
+                    $("#answer-" + id).html(
+                        '<a  href="javascript:void(0)" style="color:red">False</a>'
                     );
                 }
             },
@@ -356,44 +417,8 @@ $(document).ready(function () {
             },
         });
     });
-    var count = 0;
-    $(".addnewquestion").click(function () {
-        count += 1;
-        $(".appendnewquestion").append(
-            '<div class="row inputform">' +
-                '<div class="col-md-1">' +
-                '<label for="exampleInputEmail1">Answer</label><br>' +
-                '<input type="checkbox" style="width:30px; height:30px;" name="correct_answer[]" value="' +
-                count +
-                '">' +
-                "</div>" +
-                '<div class="col-md-10">' +
-                '<div class="form-group">' +
-                '<div class="form-group">' +
-                '<textarea name="answer[]" " style="height:50px" class="form-control answer-' +
-                count +
-                '" required></textarea>' +
-                "</div>" +
-                "</div>" +
-                "</div>" +
-                '<div class="col-md-1">' +
-                '<a href="javascript:void(0)" class="minusnewquestion"><i class="fas fa-minus-circle fa-3x" style="margin-top:25px;"></i></a>' +
-                "</div>" +
-                "</div>"
-            // CKEDITOR.replace('answer')
-        );
-
-        $(".minusnewquestion").click(function () {
-            $(this).closest(".inputform").remove();
-        });
-        ClassicEditor.create(document.querySelector(".answer-" + count));
-    });
 });
 var loadfile = function (event) {
     var output = document.getElementById("output");
     output.src = URL.createObjectURL(event.target.files[0]);
 };
-// var loadfile1 = function (event) {
-//     var output = document.getElementById("output1");
-//     output.src = URL.createObjectURL(event.target.files[0]);
-// };

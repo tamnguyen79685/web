@@ -18,24 +18,26 @@ class SubjectController extends Controller
     }
     public function Add(Request $request){
         $data=$request->all();
+        $data['grade_id']=implode(",", $data['grade_id']);
         Subject::create($data);
         return redirect()->back()->with('success_message', 'Created Subject Successfully');
     }
     public function Edit(Request $request, $id){
         $data=$request->all();
+        $data['grade_id']=implode(",", $data['grade_id']);
         Subject::find($id)->update($data);
         return redirect()->back()->with('success_message', 'Updated Subject Successfully');
     }
     public function DeleteAll(Request $request){
         $data = $request->all();
-        
+
             if($request->ajax()){
                 $data=$request->all();
                 Subject::whereIn('id', explode(",", $data['ids']))->delete();
                 return response()->json(['status'=>true]);
             }
             return redirect()->back()->with('success_message', 'Deleted Subject Successfully');
-        
+
     }
     public function StatusSubject(Request $request){
         if($request->ajax()){

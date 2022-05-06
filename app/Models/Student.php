@@ -45,5 +45,8 @@ class Student extends Authenticatable
      *
      * @var array<string, string>
      */
-
+    public function student(){
+        $students=Student::get()->toArray();
+        return $students;
+    }
 }

@@ -65,7 +65,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="recipient-name" class="col-form-label">Grade:</label>
-                                                    <select class="form-control" name="grade_id" required>
+                                                    <select class="form-control select2" name="grade_id[]" multiple required>
                                                         @foreach ($grades as $grade)
                                                             <option value="{{ $grade['id'] }}">{{ $grade['grade'] }}</option>
                                                         @endforeach
@@ -94,7 +94,7 @@
                                 <table id="subjects" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th style="width:50px"><input type="checkbox" class="select-all"></th>
+                                            <th style="width:20px"><input type="checkbox" class="select-all"></th>
                                             <th>ID</th>
 
                                             <th>Subject Name</th>
@@ -118,7 +118,7 @@
                                                 </td>
                                                 <td>
                                                     @foreach ($grades as $grade)
-                                                        @if ($grade['id'] == $subject['grade_id'])
+                                                        @if (in_array($grade['id'], explode(",",$subject['grade_id'])))
                                                             {{$grade['grade']}}
                                                         @endif
                                                     @endforeach
@@ -159,9 +159,9 @@
                                                                         <div class="form-group">
                                                                             <label for="recipient-name"
                                                                                 class="col-form-label">Grade:</label>
-                                                                            <select class="form-control" name="grade_id" required>
+                                                                            <select class="form-control select2" name="grade_id[]" multiple required>
                                                                                 @foreach ($grades as $grade)
-                                                                                    @if ($grade['id'] == $subject['grade_id'])
+                                                                                    @if (in_array($grade['id'],explode(",",$subject['grade_id'])))
                                                                                         <option value="{{ $grade['id'] }}"
                                                                                             selected>{{ $grade['grade'] }}
                                                                                         </option>

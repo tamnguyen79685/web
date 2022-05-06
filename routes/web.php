@@ -33,13 +33,20 @@ Route::prefix('admin')->namespace('Admin')->group(function(){
         Route::post('/status/exam', 'ExamController@StatusExam');
         Route::get('/delete-all/exams', 'ExamController@DeleteAll');
         //Questions Exam
-        Route::match(['get', 'post'], 'questions/exam/{id}', 'QuestionExamController@Index');
+        Route::get('questions/grade/{grade_id}/exam/{id}', ['as'=>'admin.question.grade.exam', 'uses'=>'QuestionExamController@Index']);
         Route::get('/delete-all/questions-exam', 'QuestionExamController@DeleteAll');
         Route::post('/status/questions-exam', 'QuestionExamController@StatusQuestion');
-        Route::get('/delete-question/{id}', 'QuestionExamController@DeleteQuestion');
-        Route::match(['get', 'post'], 'add-question/exam/{id}', 'QuestionExamController@addQuestion');
-        Route::match(['get', 'post'], 'edit-question/{question_id}/exam/{id}',['as'=>'admin.edit-question.exam', 'uses'=>'QuestionExamController@editQuestion']);
-
+        // Route::get('/delete-question/{id}', 'QuestionExamController@DeleteQuestion');
+        Route::post('/update-question', 'QuestionExamController@updateQuestion');
+        Route::match(['get', 'post'], 'add-question/grade/{grade_id}/exam/{id}', ['as'=>'admin.add-question.grade.exam', 'uses'=>'QuestionExamController@addQuestion']);
+        Route::match(['get', 'post'], 'edit-question/{question_id}/grade/{grade_id}/exam/{id}',['as'=>'admin.edit-question.grade.exam', 'uses'=>'QuestionExamController@editQuestion']);
+        //Answer Exam
+        Route::get('question/{question_id}/exam/{exam_id}/answer', ['as'=>'admin.question.exam.answer', 'uses'=>'AnswerExamController@Index']);
+        Route::match(['get', 'post'], 'add-answer/question/{question_id}/exam/{exam_id}', ['as'=>'admin.add-answer.question.exam', 'uses'=>'AnswerExamController@addAnswer']);
+        Route::match(['get', 'post'], 'edit-answer/{answer_id}/question/{question_id}/exam/{exam_id}', ['as'=>'admin.edit-answer.question.exam', 'uses'=>'AnswerExamController@editAnswer']);
+        Route::match(['get', 'post'], 'delete-answer/{answer_id}', ['as'=>'admin.delete-question.exam.answer', 'uses'=>'AnswerExamController@deleteAnswer']);
+        Route::post('/status/answer', 'AnswerExamController@statusAnswer');
+        Route::get('/delete-all/answer', 'AnswerExamController@DeleteAll');
         //Teachers
         Route::get('/teachers', 'TeacherController@index');
         Route::match(['get', 'post'], '/add-teacher', 'TeacherController@addTeacher');
@@ -53,7 +60,7 @@ Route::prefix('admin')->namespace('Admin')->group(function(){
         Route::post('/edit-subject/{id}', 'SubjectController@Edit');
         Route::get('/delete-all/subjects', 'SubjectController@DeleteAll');
         Route::post('/status/subject', 'SubjectController@StatusSubject');
-        Route::get('/delete-subject', 'SubjectController@Delete');
+        Route::get('/delete-subject/{id}', 'SubjectController@Delete');
         //students
         Route::get('/students', 'StudentController@Index');
         Route::match(['get', 'post'], '/add-student', 'StudentController@addStudent');
@@ -78,11 +85,27 @@ Route::prefix('admin')->namespace('Admin')->group(function(){
         Route::get('/delete-all/grades', 'GradeController@DeleteAll');
         Route::post('/status/grade', 'GradeController@StatusGrade');
         //Questions
-        Route::get('/questions/grade/{grade_id}', 'QuestionController@Index');
-        Route::match(['get', 'post'], '/add-question/grade/{grade_id}', 'QuestionController@addQuestion');
-        Route::match(['get', 'post'], '/edit-question/{id}/grade/{grade_id}',['as'=>'admin.edit-question.grade', 'uses'=>'QuestionController@editQuestion']);
-        Route::post('/chose-question', 'QuestionController@choseQuestion');
-
-        Route::post('/upload-image-ckeditor', 'CkeditorController@uploadImage');
+        Route::get('/subjects/grade/{grade_id}', 'QuestionController@subjectGrade');
+        Route::get('/questions/subject/{subject_id}/grade/{grade_id}', ['as'=>'admin.questions.subject.grade','uses'=>'QuestionController@Index']);
+        Route::match(['get', 'post'], '/add-question/subject/{subject_id}/grade/{grade_id}', ['as'=>'admin.add-question.subject.grade', 'uses'=>'QuestionController@addQuestion']);
+        Route::match(['get', 'post'], '/edit-question/{question_id}/subject/{subject_id}/grade/{grade_id}',['as'=>'admin.edit-question.subject.grade', 'uses'=>'QuestionController@editQuestion']);
+        //Choose Question
+        Route::post('/choose-question','QuestionController@chooseQuestion');
+        //Answers
+        Route::get('view-answer/question/{question_id}', 'AnswerController@viewAnswer');
+        Route::post('add-answer/question/{question_id}', 'AnswerController@addAnswer');
+        Route::post('edit-answer/{answer_id}/question/{question_id}', ['as'=>'admin.edit-answer.question', 'uses'=>'AnswerController@editAnswer']);
+        // Route::post('/upload-image-ckeditor', 'CkeditorController@uploadImage');
     });
 });
+Route::namespace('Frontend')->group(function(){
+    Route::match(['get', 'post'], '/', 'StudentController@Login');
+    Route::group(['middleware'=>'student'], function(){
+        Route::match(['get', 'post'], '/dashboard', 'StudentController@Index');
+        Route::get('/logout', 'StudentController@Logout');
+        Route::match(['get', 'post'], '/change-detail', 'StudentController@ChangeDetail');
+
+        Route::match(['get', 'post'], 'exam/subject/{subject_id}', 'SubjectController@Index');
+    });
+});
+

@@ -1,5 +1,15 @@
 @extends('layouts.admin.admin_dashboard')
 @section('content')
+<?php
+use App\Models\Admin;
+use App\Models\Student;
+use App\Models\Classes;
+use App\Models\Subject;
+$students=Student::student();
+$teachers=Admin::teacher();
+$classes=Classes::classes();
+$subjects=Subject::subject();
+?>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content-header">
@@ -23,17 +33,18 @@
         <section class="content">
             <div class="container-fluid">
                 <!-- Small boxes (Stat box) -->
+                @if(Auth::guard('admin')->user()->role==1)
                 <div class="row">
                     <div class="col-lg-3 col-6">
                         <!-- small box -->
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <h3>150</h3>
+                                <h3>{{count($teachers)}}</h3>
 
-                                <p>New Orders</p>
+                                <p>Teachers</p>
                             </div>
                             <div class="icon">
-                                <i class="ion ion-bag"></i>
+                                <i class="fas fa-chalkboard-teacher"></i>
                             </div>
                             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
@@ -43,12 +54,12 @@
                         <!-- small box -->
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                                <h3>{{count($students)}}</h3>
 
-                                <p>Bounce Rate</p>
+                                <p>Students</p>
                             </div>
                             <div class="icon">
-                                <i class="ion ion-stats-bars"></i>
+                                <i class="fa fa-user-graduate"></i>
                             </div>
                             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
@@ -58,12 +69,12 @@
                         <!-- small box -->
                         <div class="small-box bg-warning">
                             <div class="inner">
-                                <h3>44</h3>
+                                <h3>{{count($classes)}}</h3>
 
-                                <p>User Registrations</p>
+                                <p>Classes</p>
                             </div>
                             <div class="icon">
-                                <i class="ion ion-person-add"></i>
+                                <i class="fas fa-school"></i>
                             </div>
                             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
@@ -73,18 +84,19 @@
                         <!-- small box -->
                         <div class="small-box bg-danger">
                             <div class="inner">
-                                <h3>65</h3>
+                                <h3>{{count($subjects)}}</h3>
 
-                                <p>Unique Visitors</p>
+                                <p>Subjects</p>
                             </div>
                             <div class="icon">
-                                <i class="ion ion-pie-graph"></i>
+                                <i class="fas fa-book-reader"></i>
                             </div>
                             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                     <!-- ./col -->
                 </div>
+                @endif
                 <!-- /.row -->
                 <!-- Main row -->
                 {{-- <div class="row">
