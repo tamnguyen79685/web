@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>Mentoring</title>
     <base href="{{ asset('') }}" />
     <link type="image/x-icon" href="frontend/assets/img/favicon.png" rel="icon">
@@ -24,21 +25,11 @@
 
     <link rel="stylesheet" href="frontend/assets/css/style.css">
 </head>
-
-
-
-
-
-
 @include('layouts.frontend.header')
-
 <div class="main-wrapper">
 
     @yield('content')
-
-
     @include('layouts.frontend.footer')
-
 </div>
 
 <script data-cfasync="false" src="frontend/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
@@ -59,8 +50,10 @@
 <script src="frontend/assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
 
 
-
+<script src="front_js/front_js.js"></script>
 <script src="frontend/assets/js/script.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@stack('scripts')
 </body>
 
 </html>

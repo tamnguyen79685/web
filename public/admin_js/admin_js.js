@@ -22,20 +22,20 @@ $(document).ready(function () {
             }
         });
     });
-    $('.updatequestion').click(function(){
+    $(".updatequestion").click(function () {
         // alert(1);
-        var recordid=$(this).attr('recordid');
-        var grade_id=$(this).attr('gradeid');
-        var exam_id=$(this).attr('examid');
+        var recordid = $(this).attr("recordid");
+        var grade_id = $(this).attr("gradeid");
+        var exam_id = $(this).attr("examid");
         $.ajax({
-            url:'admin/update-question',
-            type:'post',
-            data:{
-                recordid:recordid,
-                examid:exam_id
+            url: "admin/update-question",
+            type: "post",
+            data: {
+                recordid: recordid,
+                examid: exam_id,
             },
-            success:function(resp){
-                if(resp['status']==true){
+            success: function (resp) {
+                if (resp["status"] == true) {
                     Swal.fire({
                         title: "Are you sure?",
                         text: "You won't be able to revert this!",
@@ -47,16 +47,19 @@ $(document).ready(function () {
                     }).then((result) => {
                         if (result.isConfirmed) {
                             window.location.href =
-                                "/admin/questions/grade/" + grade_id + "/exam/" + exam_id;
+                                "/admin/questions/grade/" +
+                                grade_id +
+                                "/exam/" +
+                                exam_id;
                         }
                     });
                 }
             },
-            error:function(){
-                alert('ERROR');
-            }
-        })
-    })
+            error: function () {
+                alert("ERROR");
+            },
+        });
+    });
     $(".select-all").click(function () {
         if (this.checked) {
             $(".sub_ck").each(function () {
@@ -103,22 +106,25 @@ $(document).ready(function () {
         }
     });
 
-    $(".sub_ck").click(function () {
+    $(".sub_ck_question").click(function () {
         var allquestion_ids = [];
         // var allsubject_ids = [];
-        $(".sub_ck:checked").each(function () {
-            allquestion_ids.push($(this).attr("data-id"));
-            // allsubject_ids.push($(this).attr('data-subject'));
-        });
+        var question_id=$(this).attr('data-id');
+        // alert(question_id);
+        // $(".sub_ck_question:checked").each(function () {
+        //     allquestion_ids.push($(this).attr("data-id"));
+        //     // allsubject_ids.push($(this).attr('data-subject'));
+        // });
+        allquestion_ids.push(question_id);
         if (allquestion_ids.length == 0) {
             alert("You must select at least 1 question");
         } else {
             $(".trythis").change(function () {
-                var alls=allquestion_ids.join(",");
-                var grade_id = $(this).children(':selected').attr("data-grade");
-                var subject_id=$(this).children(':selected').attr('data-subject');
-                var exam_id = $(this).children(':selected').attr("data-examid");
-                $('.submit-question').click(function(){
+                var alls = allquestion_ids.join(",");
+                var grade_id = $(this).children(":selected").attr("data-grade");
+                var subject_id = $(this).children(":selected").attr("data-subject");
+                var exam_id = $(this).children(":selected").attr("data-examid");
+                $(".submit-question").click(function () {
                     $.ajax({
                         url: "admin/choose-question",
                         type: "post",
@@ -128,21 +134,27 @@ $(document).ready(function () {
                             // grade_id:grade_id
                         },
                         success: function (resp) {
-                            if(resp['status']==true){
-                                alert('Insert Successfully Questions in the Exam');
+                            if (resp["status"] == true) {
+                                // alert(
+                                //     "Insert Successfully Questions in the Exam"
+                                // );
                                 window.location.href =
-                                    "/admin/questions/subject/" + subject_id+"/grade/"+grade_id;
+                                    "/admin/questions/subject/" +
+                                    subject_id +
+                                    "/grade/" +
+                                    grade_id;
                             }
                         },
                         error: function () {
                             alert("ERROR");
                         },
                     });
-                })
-
+                });
             });
         }
     });
+
+
     $("#appendgradeid").change(function () {
         var grade_id = $(this).val();
         // alert(grade_id);
@@ -155,7 +167,7 @@ $(document).ready(function () {
             success: function (resp) {
                 // console.log(resp['getgrades']['class']);
                 var answer;
-                resp["getgrades"]["class"].forEach(function (obj) {
+                resp["getgrades"].forEach(function (obj) {
                     // alert(obj['name']);
                     answer +=
                         '<option value="' +

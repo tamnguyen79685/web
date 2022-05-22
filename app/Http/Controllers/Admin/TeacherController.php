@@ -11,15 +11,38 @@ use App\Models\Subject;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\TeacherImport;
+use App\Exports\TeacherExport;
+use Illuminate\Support\Facades\DB;
 class TeacherController extends Controller
 {
     public function Index()
     {
         // Session::put('subject_id', Auth::guard('admin')->user()->id);
         // dd(Auth::guard('admin')->user()->subject_id);
+
+        // dd($xxx);
+        // $records=DB::table('admins')->join('subjects', 'subjects.id', '=', 'admins.subject_id')->join('classes',function($query){
+        //     $query->on(DB::raw("find_in_set(classes.id, admins.class_id)"));
+        // })->select(
+        //     'admins.id', 'admins.name as teachername','email', 'mobile','subjects.name as subjectname', 'classes.name as classname', 'birth_day','address',
+        //     DB::raw("(CASE WHEN sex=1 THEN 'M' ELSE 'F' END) as sex")
+        // )->where('admins.role','!=', 1);
+        $records=DB::table('admins')->join('subjects', 'subjects.id', '=', 'admins.subject_id')->join('classes',function($query){
+            $query->whereRaw(DB::raw("find_in_set(classes.id, admins.class_id)", DB::raw(''), DB::raw('')));
+        })->select(
+            'admins.id', 'admins.name as teachername','email', 'mobile','subjects.name as subjectname', 'classes.name as classname', 'birth_day','address',
+            DB::raw("(CASE WHEN sex=1 THEN 'M' ELSE 'F' END) as sex")
+        )->get()->toArray();
+
+        // dd($records);
         Session::put('page', 'teacher');
-        $teachers = Admin::where('role', 0)->get()->toArray();
+        if(Auth::guard('admin')->user()->role==1){
+            $teachers = Admin::where('role', 0)->orWhere('role', -1)->get()->toArray();
+        }else{
+            $teachers = Admin::where('subject_id', Auth::guard('admin')->user()->subject_id)->where('role', 0)->orWhere('role', -1)->get()->toArray();
+        }
         $classes = Classes::get()->toArray();
         $subjects = Subject::get()->toArray();
         $class_id = [];
@@ -116,5 +139,21 @@ class TeacherController extends Controller
             }
             // return response()->json(['status'=>true]);
         }
+    }
+    public function ImportFileTeacher(Request $request){
+        if($request->isMethod('post')){
+            // $request->validate(
+            //     [
+            //         'file'=>'required|mimes:xls, xlsx',
+            //     ]
+            // );
+
+            Excel::import(new TeacherImport,request()->file('file'));
+            return redirect('/admin/teachers')->with('success_message', 'Created Teachers Successfully');
+        }
+        return View('admin.teachers.add_file_teacher');
+    }
+    public function ExportFileTeacher(Request $request){
+        return Excel::download(new TeacherExport, 'teachers.xlsx');
     }
 }

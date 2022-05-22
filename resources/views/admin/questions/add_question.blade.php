@@ -142,11 +142,17 @@
 @endsection
 @push('script')
     {{-- <script src="//cdn.ckeditor.com/4.17.2/standard/ckeditor.js"></script> --}}
-    <script src="//cdn.ckeditor.com/4.18.0/standard/ckeditor.js"></script>
+    {{-- <script src="//cdn.ckeditor.com/4.18.0/standard/ckeditor.js"></script> --}}
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
     <script>
         // Replace the <textarea id="editor1"> with a CKEditor 4
         // instance, using default configuration.
-        CKEDITOR.replace( 'question' );
+        // CKEDITOR.replace( 'question' );
+        ClassicEditor
+        .create( document.querySelector( '#question' ) )
+        .catch( error => {
+            console.error( error );
+        } );
     </script>
 
 @endpush

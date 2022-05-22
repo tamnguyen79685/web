@@ -25,4 +25,5 @@ class Classes extends Model
         $classes=Classes::get()->toArray();
         return $classes;
     }
+
 }

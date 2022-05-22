@@ -24,7 +24,7 @@ class QuestionController extends Controller
         // dd($classes);
         $teacher_exam = Admin::with('exam')->where('id', Auth::guard('admin')->user()->id)->first()->toArray();
         // dd($teacher_exam);
-        $teachers = Admin::where('role', 0)->get()->toArray();
+        $teachers = Admin::where('role', 0)->orWhere('role', -1)->get()->toArray();
         $subjects = Subject::get()->toArray();
         Session::put('page', $grade_id);
         // $grades=Grade::with('class')->get()->toArray();
@@ -93,16 +93,20 @@ class QuestionController extends Controller
             $data = $request->all();
             // $data['exam_id']+=$data['exam_id'].",";
             $questions=Question::whereIn('id', explode(",", $data['allquestion_ids']))->get();
-            // $xxx=array();
             foreach($questions as $question){
-                // $xxx[$key]=$question['select_id']+$data['exam_id'];
-                Question::find($question['id'])->update(['select_id'=>$question['select_id'].",".$data['exam_id']]);
+                $question->update(['select_id'=>($question['select_id'].','.$data['exam_id'])]);
             }
             // dd($xxx);
             // dd($data['exam_id']);
             // Question::whereIn('id', explode(",", $data['allquestion_ids']))->update(['select_id'=>$data['exam_id']]);
             return response()->json(['status'=>true]);
             // return redirect()->back();
+        }
+    }
+    public function randomQuestion(Request $request){
+        if($request->isMethod('post')){
+            $data=$request->all();
+            dd($data);
         }
     }
     public function subjectGrade(Request $request, $grade_id)
